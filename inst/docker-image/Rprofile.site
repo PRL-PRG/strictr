@@ -1,0 +1,8 @@
+options(
+  repos=Sys.getenv("CRAN_MIRROR_LOCAL_URL", "https://cran.r-project.org"),
+  keep.parse.data=TRUE,
+  keep.parse.data.pkgs=TRUE,
+  keep.source=TRUE,
+  keep.source.pkgs=TRUE
+)
+.libPaths(c(.libPaths(), "/R/library/4.0.2"))
