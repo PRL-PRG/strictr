@@ -13,7 +13,9 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-    instrumentr
+    instrumentr,
+    fst,
+    purrr
 Remotes:
     PRL-PRG/instrumentr
 Roxygen: list(markdown = TRUE)

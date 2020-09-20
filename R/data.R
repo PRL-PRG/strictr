@@ -22,6 +22,18 @@ extract_tracing_data <- function(tracer) {
          arguments = to_data_frame(data$arguments))
 }
 
+#' @export
+#' @importFrom purrr imap_chr
+#' @importFrom fst write_fst
+write_tracing_data <- function(data, dirpath = getwd()) {
+    writer <- function(df, filename) {
+        filepath <- file.path(dirpath, filename)
+        write_fst(df, filepath)
+        filepath
+    }
+    imap_chr(data, writer)
+}
+
 add_call_data <- function(data,
                           call_id = NA_integer_,
                           package_name = NA_character_,
