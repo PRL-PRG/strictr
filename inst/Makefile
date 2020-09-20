@@ -4,7 +4,8 @@ DATA_DIR := data
 
 # for RUN_DIR we need absolute path because parallel will run
 # things relatively from inidividual working dirs
-RUN_DIR := $(CURDIR)/run
+RUN_DIR     := $(CURDIR)/run
+SCRIPTS_DIR := $(CURDIR)/scripts
 
 JOBS          ?= 64
 PACKAGES_FILE ?= $(DATA_DIR)/packages-corpus.txt
@@ -19,38 +20,36 @@ MERGE_FST := $(RUNR_DIR)/inst/merge-fst.R
 
 # tasks output directory
 PACKAGE_COVERAGE_DIR      := $(RUN_DIR)/package-coverage
-PACKAGE_EVAL_CALLS_DIR    := $(RUN_DIR)/package-eval-calls
-PACKAGE_EVALS_DIR         := $(RUN_DIR)/package-evals
 PACKAGE_METADATA_DIR      := $(RUN_DIR)/package-metadata
-PACKAGE_RUNNABLE_CODE_DIR := $(RUN_DIR)/package-runnable-code
+PACKAGE_STRICTNESS_DIR    := $(RUN_DIR)/package-strictness
+PACKAGE_STRICTNESS_RC_DIR := $(RUN_DIR)/package-strictness-rc
 
 # tasks result
 PACKAGE_COVERAGE_CSV      := $(PACKAGE_COVERAGE_DIR)/coverage.csv
-PACKAGE_EVAL_CALLS_FST    := $(PACKAGE_EVAL_CALLS_DIR)/calls.fst
-PACKAGE_EVALS_CSV         := $(PACKAGE_EVALS_DIR)/package-evals.csv
 PACKAGE_FUNCTIONS_CSV     := $(PACKAGE_METADATA_DIR)/functions.csv
 PACKAGE_METADATA_CSV      := $(PACKAGE_METADATA_DIR)/metadata.csv
 PACKAGE_REVDEPS_CSV       := $(PACKAGE_METADATA_DIR)/revdeps.csv
-PACKAGE_RUNNABLE_CODE_CSV := $(PACKAGE_RUNNABLE_CODE_DIR)/runnable-code.csv
 PACKAGE_SLOC_CSV          := $(PACKAGE_METADATA_DIR)/sloc.csv
+PACKAGE_STRICTNESS_CSV    := $(PACKAGE_STRICTNESS_DIR)/strictness.csv
+PACKAGE_STRICTNESS_RC_CSV := $(PACKAGE_STRICTNESS_RC_DIR)/runnable-code.csv
 
 ##
 ## EXTRACT RUNNABLE CODE
 ##
-$(PACKAGE_RUNNABLE_CODE_CSV): export OUTPUT_DIR=$(@D)
-$(PACKAGE_RUNNABLE_CODE_CSV):
-	$(ON_EACH_PACKAGE) TASK=$(RUNR_TASKS_DIR)/package-runnable-code-eval.R
-	$(MERGE_CSV) "$(OUTPUT_DIR)" $(@F) runnable-code-metadata.csv
+$(PACKAGE_STRICTNESS_RC_CSV): export OUTPUT_DIR=$(@D)
+$(PACKAGE_STRICTNESS_RC_CSV):
+	$(ON_EACH_PACKAGE) TASK=$(SCRIPTS_DIR)/package-strictness-rc.R
+	$(MERGE_CSV) "$(OUTPUT_DIR)" $(@F) runnable-code-metadata.csv "task-stats.csv"
 
 ##
-## EVAL TRACING on CRAN
+## STRICTNESS SIGNATURES
 ##
-$(PACKAGE_EVAL_CALLS_FST): $(PACKAGE_RUNNABLE_CODE_CSV)
-$(PACKAGE_EVAL_CALLS_FST): export OUTPUT_DIR=$(@D)
-$(PACKAGE_EVAL_CALLS_FST): export START_XVFB=1
-$(PACKAGE_EVAL_CALLS_FST):
-	$(ON_EACH_PACKAGE) TASK=$(RUNR_TASKS_DIR)/run-extracted-code.R ARGS="$(dir $(PACKAGE_RUNNABLE_CODE_CSV))/{1/}"
-	$(MERGE_FST) "$(OUTPUT_DIR)" $(@F)
+$(PACKAGE_STRICTNESS_CSV): $(PACKAGE_STRICTNESS_RC_CSV)
+$(PACKAGE_STRICTNESS_CSV): export OUTPUT_DIR=$(@D)
+$(PACKAGE_STRICTNESS_CSV): export START_XVFB=1
+$(PACKAGE_STRICTNESS_CSV):
+	$(ON_EACH_PACKAGE) TASK=$(RUNR_TASKS_DIR)/run-extracted-code.R ARGS="$(dir $(PACKAGE_STRICTNESS_RC_CSV))/{1/}"
+	$(MERGE_CSV) "$(OUTPUT_DIR)" $(@F) "task-stats.csv"
 
 ##
 ## COVERAGE
@@ -60,6 +59,7 @@ $(PACKAGE_COVERAGE_CSV): export START_XVFB=1
 $(PACKAGE_COVERAGE_CSV): export RUNR_PACKAGE_COVERAGE_TYPE=all
 $(PACKAGE_COVERAGE_CSV):
 	$(ON_EACH_PACKAGE) TASK=$(RUNR_TASKS_DIR)/package-coverage.R
+	$(MERGE_CSV) "$(OUTPUT_DIR)" $(@F) "task-stats.csv"
 
 ##
 ## METADATA
@@ -69,33 +69,17 @@ $(PACKAGE_FUNCTIONS_CSV) $(PACKAGE_METADATA_CSV) $(PACKAGE_REVDEPS_CSV) $(PACKAG
 	$(ON_EACH_PACKAGE) TASK=$(RUNR_TASKS_DIR)/package-metadata.R
 	$(MERGE_CSV) "$(OUTPUT_DIR)" functions.csv metadata.csv revdeps.csv sloc.csv
 
-##
-## STATIC EVALS
-##
-$(PACKAGE_EVALS_CSV): export OUTPUT_DIR=$(@D)
-$(PACKAGE_EVALS_CSV):
-	$(ON_EACH_PACKAGE) TASK=$(RUNR_TASKS_DIR)/package-evals-statis.R
-
 .PHONY: \
-  data \
   on-each-package \
   package-coverage \
-  package-eval-calls \
-  package-evals \
   package-metadata \
-  package-runnable-code
-
-data: $(PACKAGE_COVERAGE_CSV) \
-      $(PACKAGE_METADATA_CSV) \
-      $(PACKAGE_FUNCTIONS_CSV) \
-      $(PACKAGE_REVDEPS_CSV)
-	cp $^ $(DATA_DIR)
+  package-strictness \
+  package-strictness-rc
 
 package-coverage: $(PACKAGE_COVERAGE_CSV)
-package-eval-calls: $(PACKAGE_EVAL_CALLS_FST)
-package-evals: $(PACKAGE_EVALS_CSV)
 package-metadata: $(PACKAGE_METADATA_CSV)
-package-runnable-code: $(PACKAGE_RUNNABLE_CODE_CSV)
+package-strictness: $(PACKAGE_STRICTNESS_CSV)
+package-strictness-rc: $(PACKAGE_STRICTNESS_RC_CSV)
 
 on-each-package:
 	@[ "$(TASK)" ] || ( echo "*** Undefined TASK"; exit 1 )
