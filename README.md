@@ -4,7 +4,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of strictr is to ...
+The goal of strictr is to analyze function strictness.
 
 ## Installation
 
@@ -20,6 +20,9 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(strictr)
-## basic example code
-```
 
+trace_strictness({
+    library(stringr)
+    str_c("a")
+})
+```
