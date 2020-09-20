@@ -1,9 +1,11 @@
 
 #' @importFrom instrumentr create_context
 create_strictness_tracer <- function() {
+    exclusions <- c("base", "injectr", "strictr")
+
     tracer <- create_context(
         call_exit_callback = call_exit_callback,
-        packages = setdiff(get_installed_packages(), c("base", "injectr"))
+        packages = setdiff(get_installed_packages(), exclusions)
     )
 
     initialize_tracing_data(tracer)

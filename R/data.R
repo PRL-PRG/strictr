@@ -27,7 +27,7 @@ extract_tracing_data <- function(tracer) {
 #' @importFrom fst write_fst
 write_tracing_data <- function(data, dirpath = getwd()) {
     writer <- function(df, filename) {
-        filepath <- file.path(dirpath, filename)
+        filepath <- file.path(dirpath, paste0(filename, ".fst"))
         write_fst(df, filepath)
         filepath
     }
@@ -46,16 +46,16 @@ add_call_data <- function(data,
                           c_execution_time = NA_real_,
                           r_execution_time = NA_real_) {
 
-    row <- list(call_id = call_id,
-                package_name = package_name,
-                function_name = function_name,
-                successful = successful,
-                result_type = result_type,
-                force_order = force_order,
-                c_call_count = c_call_count,
-                r_call_count = r_call_count,
-                c_execution_time = c_execution_time,
-                r_execution_time = r_execution_time)
+    row <- data.frame(call_id = call_id,
+                      package_name = package_name,
+                      function_name = function_name,
+                      successful = successful,
+                      result_type = result_type,
+                      force_order = force_order,
+                      c_call_count = c_call_count,
+                      r_call_count = r_call_count,
+                      c_execution_time = c_execution_time,
+                      r_execution_time = r_execution_time)
 
     assign(as.character(call_id), row, envir = data$calls)
 
@@ -83,24 +83,24 @@ add_argument_data <- function(data,
                               event_sequence = NA_character_,
                               evaluation_time = NA_real_) {
 
-    row <- list(parameter_id = parameter_id,
-                call_id = call_id,
-                package_name = package_name,
-                function_name = function_name,
-                parameter_position = parameter_position,
-                parameter_name = parameter_name,
-                vararg = vararg,
-                missing = missing,
-                expression_type = expression_type,
-                transitive_type = transitive_type,
-                value_type = value_type,
-                forced = forced,
-                metaprogrammed = metaprogrammed,
-                lookup_count = lookup_count,
-                force_depth = force_depth,
-                escaped = escaped,
-                event_sequence = event_sequence,
-                evaluation_time = evaluation_time)
+    row <- data.frame(parameter_id = parameter_id,
+                      call_id = call_id,
+                      package_name = package_name,
+                      function_name = function_name,
+                      parameter_position = parameter_position,
+                      parameter_name = parameter_name,
+                      vararg = vararg,
+                      missing = missing,
+                      expression_type = expression_type,
+                      transitive_type = transitive_type,
+                      value_type = value_type,
+                      forced = forced,
+                      metaprogrammed = metaprogrammed,
+                      lookup_count = lookup_count,
+                      force_depth = force_depth,
+                      escaped = escaped,
+                      event_sequence = event_sequence,
+                      evaluation_time = evaluation_time)
 
     assign(as.character(parameter_id), row, envir = data$arguments)
 
