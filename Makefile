@@ -5,10 +5,10 @@ R = R
 all: document build check
 
 build: document
-	R CMD build .
+	$(R) CMD build .
 
 check: build
-	R CMD check strictr*tar.gz
+	$(R) CMD check strictr*tar.gz
 
 clean:
 	-rm -f strictr*tar.gz
@@ -16,13 +16,13 @@ clean:
 	-rm -rf src/*.o src/*.so
 
 document:
-	R -e 'devtools::document()'
+	$(R) -e 'devtools::document()'
 
 test:
-	R -e 'devtools::test()'
+	$(R) -e 'devtools::test()'
 
 lintr:
-	R --slave -e "lintr::lint_package()"
+	$(R) --slave -e "lintr::lint_package()"
 
 install: clean
-	R CMD INSTALL .
+	$(R) CMD INSTALL .
