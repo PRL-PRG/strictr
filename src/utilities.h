@@ -5,6 +5,8 @@
 #include <string>
 #include "Rincludes.h"
 
+extern const std::string STRICTR_NA_STRING;
+
 std::string get_type_as_string(SEXP r_object);
 
 SEXP integer_vector_wrap(const std::vector<int>& vector);

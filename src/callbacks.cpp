@@ -18,17 +18,17 @@ void process_parameter(ArgumentData& argument_data,
 
     int missing = instrumentr_parameter_is_missing(parameter);
 
-    std::string expression_type;
-    std::string value_type;
-    int forced;
+    std::string expression_type = STRICTR_NA_STRING;
+    std::string value_type = STRICTR_NA_STRING;
+    int forced = NA_INTEGER;
 
     if (missing) {
-        expression_type = "";
-        value_type = "";
+        expression_type = STRICTR_NA_STRING;
+        value_type = STRICTR_NA_STRING;
         forced = NA_INTEGER;
     } else if (vararg) {
-        expression_type = "";
-        value_type = "";
+        expression_type = STRICTR_NA_STRING;
+        value_type = STRICTR_NA_STRING;
         forced = true;
 
         int argument_count =
@@ -52,7 +52,7 @@ void process_parameter(ArgumentData& argument_data,
         value_type =
             forced
                 ? get_type_as_string(instrumentr_argument_get_value(argument))
-                : "";
+                : STRICTR_NA_STRING;
     }
 
     argument_data.push_back(parameter_id,
@@ -64,7 +64,7 @@ void process_parameter(ArgumentData& argument_data,
                             vararg,
                             missing,
                             expression_type,
-                            "",
+                            STRICTR_NA_STRING,
                             value_type,
                             forced);
 }
@@ -84,7 +84,7 @@ void call_exit_callback(instrumentr_tracer_t tracer,
 
     int call_id = instrumentr_object_get_id(call);
     bool has_result = instrumentr_call_has_result(call);
-    std::string result_type = "";
+    std::string result_type = STRICTR_NA_STRING;
     if (has_result) {
         result_type = get_type_as_string(instrumentr_call_get_result(call));
     }

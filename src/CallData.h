@@ -11,11 +11,11 @@ class CallData {
     }
 
     void push_back(int call_id = NA_INTEGER,
-                   const std::string& package_name = "",
-                   const std::string& function_name = "",
+                   const std::string& package_name = STRICTR_NA_STRING,
+                   const std::string& function_name = STRICTR_NA_STRING,
                    int successful = NA_INTEGER,
-                   const std::string& result_type = "",
-                   const std::string& force_order = "",
+                   const std::string& result_type = STRICTR_NA_STRING,
+                   const std::string& force_order = STRICTR_NA_STRING,
                    int c_call_count = NA_INTEGER,
                    int r_call_count = NA_INTEGER,
                    double c_execution_time = NA_REAL,
