@@ -2,8 +2,8 @@
 #define STRICTR_TRACING_STATE_H
 
 #include "Rincludes.h"
-#include "CallData.hpp"
-#include "ArgumentData.hpp"
+#include "CallData.h"
+#include "ArgumentData.h"
 
 class TracingState {
   public:

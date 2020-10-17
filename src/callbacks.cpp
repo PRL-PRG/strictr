@@ -1,6 +1,6 @@
 #include "tracer.h"
 #include "callbacks.h"
-#include "TracingState.hpp"
+#include "TracingState.h"
 #include "utilities.h"
 #include <instrumentr/instrumentr.h>
 

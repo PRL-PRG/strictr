@@ -1,5 +1,5 @@
-#ifndef STRICTR_CALL_STATE_H
-#define STRICTR_CALL_STATE_H
+#ifndef STRICTR_CALL_DATA_H
+#define STRICTR_CALL_DATA_H
 
 #include <string>
 #include <vector>
@@ -69,4 +69,4 @@ class CallData {
     std::vector<double> r_execution_time_seq_;
 };
 
-#endif /* STRICTR_CALL_STATE_H */
+#endif /* STRICTR_CALL_DATA_H */

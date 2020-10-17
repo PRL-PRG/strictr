@@ -2,7 +2,7 @@
 #define STRICTR_TRACER_H
 
 #include "Rincludes.h"
-#include "TracingState.hpp"
+#include "TracingState.h"
 #include <instrumentr/instrumentr.h>
 
 extern "C" {

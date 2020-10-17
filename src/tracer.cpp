@@ -1,5 +1,5 @@
 #include "tracer.h"
-#include "TracingState.hpp"
+#include "TracingState.h"
 #include "callbacks.h"
 
 void strictr_tracing_state_destroy(SEXP r_tracing_state) {

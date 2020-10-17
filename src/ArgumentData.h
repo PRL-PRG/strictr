@@ -1,5 +1,5 @@
-#ifndef STRICTR_ARGUMENT_STATE_H
-#define STRICTR_ARGUMENT_STATE_H
+#ifndef STRICTR_ARGUMENT_DATA_H
+#define STRICTR_ARGUMENT_DATA_H
 
 #include <string>
 #include <vector>
@@ -115,4 +115,4 @@ class ArgumentData {
     std::vector<double> evaluation_time_seq_;
 };
 
-#endif /* STRICTR_ARGUMENT_STATE_H */
+#endif /* STRICTR_ARGUMENT_DATA_H */
