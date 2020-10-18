@@ -11,7 +11,7 @@ create_strictness_tracer <- function(packages) {
 }
 
 #' @export
-#' @importFrom instrumentr trace_code
+#' @importFrom instrumentr trace_code get_exec_stats
 trace_strictness <- function(code,
                              environment = parent.frame(),
                              quote = TRUE,
@@ -24,5 +24,9 @@ trace_strictness <- function(code,
 
     trace_code(tracer, code, environment = environment, quote = FALSE)
 
-    .Call(C_strictr_tracer_get_tracing_state, tracer)
+    state <- .Call(C_strictr_tracer_get_tracing_state, tracer)
+
+    state$exec_stats <- get_exec_stats(tracer)
+
+    state
 }
